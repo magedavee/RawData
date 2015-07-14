@@ -3,6 +3,7 @@
 #include<TGraph.h>
 #include<string>
 #include<vector>
+#include<iostream>
 #ifndef RAWDATA_HH
 #define RAWDATA_HH
 using namespace std;
@@ -19,7 +20,21 @@ public:
 	RawData(char *fileName);
 	~RawData();
 	int GetEntry(){return entry;};
-	void SetEntry(int entry){this->entry=entry; this->tree->GetEntry(entry);};
+	int GetTotalEvents(){return tree->GetEntries();};
+	void SetEntry(int num)
+	{
+	    if(num>=0&&num<this->GetTotalEvents())
+	    {
+		this->entry=num; 
+		delete ch0;
+
+		ch0=new vector<int>();
+		tree->SetBranchAddress("channelData0",&ch0);
+		this->tree->GetEntry(num);
+	    }
+	    else
+		cout<<num<<" is not in bounds\n";
+	};
 	vector<int>* GetCh0(){return ch0;};
 	TGraph* GetTrace();
 		
