@@ -26,10 +26,6 @@ public:
 	    if(num>=0&&num<this->GetTotalEvents())
 	    {
 		this->entry=num; 
-//		delete ch0;
-
-//		ch0=new vector<int>();
-//		tree->SetBranchAddress("channelData0",&ch0);
 		this->tree->GetEntry(num);
 	    }
 	    else
