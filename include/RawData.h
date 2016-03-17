@@ -11,17 +11,20 @@ class RawData
 protected:
 	TFile * file;
 	TTree* tree;
-	vector<int>* ch0;
+	vector<int>* ch[2];
 	int entry;
+	uint32_t nCha;
 public:
 	RawData();
 	RawData(string *fileName);
 	RawData(char *fileName);
 	~RawData();
 	int GetEntry(){return entry;};
+	int GetNCha(){return nCha;};
+	int GetEntries	(){return tree->GetEntries  ();	};   
 	void SetEntry(int entry){this->entry=entry; this->tree->GetEntry(entry);};
-	vector<int>* GetCh0(){return ch0;};
-	TGraph* GetTrace();
+	vector<int>* GetCh(int cha){return ch[cha];};
+	TGraph* GetTrace(int);
 		
 };
 

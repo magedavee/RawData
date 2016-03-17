@@ -11,19 +11,20 @@ class PmtData:public RawData
 {
 protected:
 	int num;
-	double DC;
+	double DC[2];
 	bool sub;
-	TH1D* charge;
+	TH1D* charge[2];
+	vector <int>* pulseIntegral[2];
 	char* histName;
 	int cutoff;
-	void FindPeaks();
-	vector<array<int,500>>* peak0;
-	vector<array<int,500>>* peak1;
+	void FindPeaks(int);
+	vector<array<int,300>>* peak0;
+	vector<array<int,300>>* peak1;
 public:
-	void SetHistName(char * name){this->charge->SetName(name);};
+	//void SetHistName(char * name){this->charge->SetName(name);};
 	PmtData(char* filename);
 	PmtData();
-	double GetDC();
+	double GetDC(int);
 	void SetEntry(int entry)
 	{
 		if(entry<num&&num>=0)
@@ -38,12 +39,14 @@ public:
 	};
 	void SetNum(int num){this->num=num;};
 	int GetNum(){return this->num;};
-	TH1D* GetIntegral();
-	void CalIntegral();
-	TGraph* GetTrace();
+	TH1D* GetIntegral(int);
+	void CalIntegral(int);
+	int GetPulseIntegral(int,int);
+	TGraph* GetTrace(int);
 	TGraph* GetTraceSubNoise();
 	TGraph* GetTracePeak();
 	void Write(char* file);
+	array<int,300> GetPulse(int);
 
 };
 

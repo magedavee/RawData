@@ -8,23 +8,33 @@ PmtData::PmtData()
 	
 }
 PmtData::PmtData(char *filename):RawData(filename)
-{	
+{
 	entry=0;
-	num=50000;
+	num=GetEntries();
 	sub=false;
-	DC=0;
-	GetDC();
+	DC[0]=0;
+	DC[1]=0;
+	GetDC(0);
+	GetDC(1);
 	cutoff=3980;
-	peak0=new vector<array<int,500>>();
-	peak1=new vector<array<int,500>>();
-	charge=new TH1D("charge","charge",10000,0,10000);
+	peak0=new vector<array<int,300>>();
+	peak1=new vector<array<int,300>>();
+	charge[0]=new TH1D("chargeLeft","charge Left",10000,0,10000);
+	charge[1]=new TH1D("chargeRight","charge Right",10000,0,10000);
+	pulseIntegral[0]=new vector<int>();
+	pulseIntegral[1]=new vector<int>();
 }
 
-double PmtData::GetDC()
+double PmtData::GetDC(int cha)
 {
-	if(DC!=0)
+	if(cha>2)
 	{
-		return DC;
+	    cout<<"channel higher than 2 will be set to 0";
+	    cha=0;
+	}
+	if(DC[cha]!=0)
+	{
+		return DC[cha];
 	}
 	else
 	{
@@ -40,12 +50,14 @@ double PmtData::GetDC()
 			for(int i=0;i<num;++i)
 			{
 				this->SetEntry(i);
-				for(auto it=ch0->begin();it!=ch0->end();++it)
+				int q=0;
+				for(auto it=ch[0]->begin();it!=ch[0]->end();++it)
 				{
 					if(*it>cutoff)
 					{
 						hist.Fill(*it);	
 					}
+					++q;
 				}
 			}
 			if(kurt>hist.GetKurtosis())
@@ -55,30 +67,56 @@ double PmtData::GetDC()
 			}
 			mean[j]=hist.GetMean();
 		this->SetEntry(ent);
-		DC=mean[index];
+		DC[cha]=mean[index];
 		}
 	}
-	cout<<"DC "<<DC<<endl;
-	return DC;
+	cout<<"DC "<<DC[cha]<<endl;
+	return DC[cha];
 }
 
 
 
-TH1D* PmtData::GetIntegral()
+TH1D* PmtData::GetIntegral(int cha)
 {
+	if(cha>2)
+	{
+	    cout<<"channel higher than 2 will be set to 0";
+	    cha=0;
+	}
 	
-	return charge;
+	return charge[cha];
 }
 
-void PmtData::CalIntegral()
+int PmtData::GetPulseIntegral(int cha,int event)
+{
+    if(cha>2)
+    {
+	cout<<"channel is greater then 2.";
+	return 0;
+    }
+    
+    if(event>=num)
+    {
+	cout<<"event is greater then "<< num;
+	return 0;
+    }
+
+    return pulseIntegral[cha]->at(event);
+}
+void PmtData::CalIntegral(int cha)
 {	
-	FindPeaks();
+	if(cha>2)
+	{
+	    cout<<"channel higher than 2 will be set to 0";
+	    cha=0;
+	}
+	FindPeaks(cha);
 	int ent=GetEntry();
 	for(int i=0;i<num;++i)
 	{
 	
 		SetEntry(i);	
-		for(int j=5;j<480;++j)
+		for(int j=5;j<280;++j)
 		{
 			if(peak1->at(i)[j]<0)
 			{
@@ -86,10 +124,11 @@ void PmtData::CalIntegral()
 				int integral=0;
 				for(int k=j-5;k<j+20;++k)
 				{
-					integral-=ch0->at(k)-DC;	
+					integral-=ch[0]->at(k)-DC[0];	
 				}
 			//	cout<<integral<<endl;
-				charge->Fill(integral);
+				charge[cha]->Fill(integral);
+				pulseIntegral[cha]->push_back(integral);
 			}
 		}		
 		
@@ -98,25 +137,30 @@ void PmtData::CalIntegral()
 		
 }
 
-void PmtData::FindPeaks()
+void PmtData::FindPeaks(int cha)
 {
 	cout<<"Finding Peaks\n";
 	bool peak=false;
-	array <int,500> peakBuffer0;
-	array <int,500> peakBuffer1;
+	array <int,300> peakBuffer0;
+	array <int,300> peakBuffer1;
 	bool find=false;
 	int ent=GetEntry();
+	if(cha>2)
+	{
+	    cout<<"channel higher than 2 will be set to 0";
+	    cha=0;
+	}
 	for(int j=0;j<num;++j)
 	{
 		SetEntry(j);
 		peakBuffer0.fill(0);
 		peakBuffer1.fill(0);
 		
-		for(int i=0;i<ch0->size();++i)
+		for(int i=0;i<ch[0]->size();++i)
 		{
-			if(cutoff>=ch0->at(i))
+			if(cutoff>=ch[0]->at(i))
 			{
-				peakBuffer0[i]=ch0->at(i)-DC;
+				peakBuffer0[i]=ch[0]->at(i)-DC[0];
 				
 			}
 			else
@@ -127,7 +171,7 @@ void PmtData::FindPeaks()
 		}
 		peak0->push_back(peakBuffer0);
 		vector<int> indexBuffer;
-		for(int i=5;i<480;++i)
+		for(int i=5;i<280;++i)
 		{
 			if(peakBuffer0[i]<0)
 			{	
@@ -150,45 +194,64 @@ void PmtData::FindPeaks()
 		peak1->push_back(peakBuffer1);
 	}
 	SetEntry(ent);
-
+	cout<<"Finding Peak end\n";
 }
 
-TGraph* PmtData::GetTrace()
+TGraph* PmtData::GetTrace(int cha)
 {
-	int x[500];
-        int y[500];
-        for(int i=0;i<500&&i<ch0->size();++i)
+	int x[300];
+        int y[300];
+	if(cha>2)
+	{
+	    cout<<"channel higher than 2 will be set to 0";
+	    cha=0;
+	}
+        for(int i=0;i<300&&i<ch[cha]->size();++i)
         {
-                x[i]=i;
-                y[i]=ch0->at(i)-DC;
+                x[i]=i*4;
+                y[i]=ch[cha]->at(i)-DC[cha];
         }
-        TGraph* trace=new TGraph(500,x,y);
+        TGraph* trace=new TGraph(300,x,y);
         return trace;
 
 }
+array<int,300> PmtData::GetPulse(int cha)
+{
+	array<int,300> x;
+	if(cha>2)
+	{
+	    cout<<"channel higher than 2 will be set to 0";
+	    cha=0;
+	}
+        for(int i=0;i<300&&i<ch[cha]->size();++i)
+        {
+                x[i]=ch[cha]->at(i)-DC[cha];
+        }
+        return x;
 
+}
 TGraph* PmtData::GetTraceSubNoise()
 {
-	int x[500];
-	int y[500];
-	for(int i=0;i<500;++i)
+	int x[300];
+	int y[300];
+	for(int i=0;i<300;++i)
 	{
-		x[i]=i;
+		x[i]=i*4;
 		y[i]=peak0->at(entry)[i];
 	}
-	return new TGraph(500,x,y);
+	return new TGraph(300,x,y);
 }
 
 TGraph* PmtData::GetTracePeak()
 {
-	int x[500];
-	int y[500];
-	for(int i=0;i<500;++i)
+	int x[300];
+	int y[300];
+	for(int i=0;i<300;++i)
 	{
 		x[i]=i;
 		y[i]=peak1->at(entry)[i];
 	}
-	return new TGraph(500,x,y);
+	return new TGraph(300,x,y);
 }
 
 void PmtData::Write(char *fileName)
@@ -196,6 +259,7 @@ void PmtData::Write(char *fileName)
 
 	cout<<fileName<<endl;
 	TFile * file=new TFile(fileName,"RECREATE");
-	this->charge->Write();
+	this->charge[0]->Write();
+	this->charge[1]->Write();
 	file->Close();	
 }

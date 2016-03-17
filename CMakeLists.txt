@@ -20,6 +20,9 @@ endif()
 
 set(RAW "${PROJECT_SOURCE_DIR}/src/RawData.cpp")
 set(RAWH "${PROJECT_SOURCE_DIR}/include/RawData.h")
+
+set(PMT "${PROJECT_SOURCE_DIR}/src/PmtData.cpp")
+set(PMTH "${PROJECT_SOURCE_DIR}/include/PmtData.h")
 #-------------------------------
 # ROOT dependencies
 #-------------------------------
@@ -36,24 +39,23 @@ set(SB_G4_LINKDEF ${RAWH})
 set(SB_G4_DICTIONARY ${CMAKE_CURRENT_BINARY_DIR}/RawDataLib_Dict.cxx)
 MESSAGE("Generating dictionary ${SB_G4_DICTIONARY}")
 set(DICTFILES ${PROJECT_SOURCE_DIR}/include/RawData.h)
-set(DICTFILES ${PROJECT_SOURCE_DIR}/include/RawData.h)
 MESSAGE( STATUS "DIC " ${DICTFILES})
 ROOT_GENERATE_DICTIONARY("${DICTFILES}" "${SB_G4_LINKDEF}" "${SB_G4_DICTIONARY}" "")
 LIST(APPEND RAW ${SB_G4_DICTIONARY})
 
-MESSAGE("Project source ${RAW}")
+set(SB_G4_LINKDEF ${PMTH})
+set(SB_G4_DICTIONARY ${CMAKE_CURRENT_BINARY_DIR}/PmtDataLib_Dict.cxx)
+MESSAGE("Generating dictionary ${SB_G4_DICTIONARY}")
+set(DICTFILES ${PROJECT_SOURCE_DIR}/include/PmtData.h)
+MESSAGE( STATUS "DIC " ${DICTFILES})
+ROOT_GENERATE_DICTIONARY("${DICTFILES}" "${SB_G4_LINKDEF}" "${SB_G4_DICTIONARY}" "")
+LIST(APPEND PMT ${SB_G4_DICTIONARY})
+
 add_library(RawData SHARED ${RAW} ${RAWH})
-#add_library(RawData SHARED RawData.cpp)
 target_link_libraries(RawData ${ROOT_LIBRARIES})
-#target_link_libraries(main RawData)
-#add_library(PmtData SHARED RawData.cpp)
-#add_library(PmtData_static STATIC PmtData.cpp)
-#target_link_libraries(PmtData ${ROOT_LIBRARIES})
-#Uncomment this next two lines if you want and example program buit with your code
 
-#add_executable(example example.cpp) 
-#target_link_libraries(example ${ROOT_LIBRARIES} RawData)
-
+add_library(PmtData SHARED ${PMT} ${PMTH})
+target_link_libraries(PmtData ${ROOT_LIBRARIES})
 
 #################
 # Build settings
