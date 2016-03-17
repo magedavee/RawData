@@ -124,7 +124,7 @@ void PmtData::CalIntegral(int cha)
 				int integral=0;
 				for(int k=j-5;k<j+20;++k)
 				{
-					integral-=ch[0]->at(k)-DC[0];	
+					integral-=ch[0]->at(k)-DC[cha];	
 				}
 			//	cout<<integral<<endl;
 				charge[cha]->Fill(integral);
@@ -160,7 +160,7 @@ void PmtData::FindPeaks(int cha)
 		{
 			if(cutoff>=ch[0]->at(i))
 			{
-				peakBuffer0[i]=ch[0]->at(i)-DC[0];
+				peakBuffer0[i]=ch[0]->at(i)-DC[cha];
 				
 			}
 			else
