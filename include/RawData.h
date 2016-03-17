@@ -21,13 +21,10 @@ public:
 	RawData(char *fileName);
 	~RawData();
 	int GetEntry(){return entry;};
-<<<<<<< HEAD
 	int GetNCha(){return nCha;};
 	int GetEntries	(){return tree->GetEntries  ();	};   
-	void SetEntry(int entry){this->entry=entry; this->tree->GetEntry(entry);};
 	vector<int>* GetCh(int cha){return ch[cha];};
 	TGraph* GetTrace(int);
-=======
 	int GetTotalEvents(){return tree->GetEntries();};
 	void SetEntry(int num)
 	{
@@ -39,9 +36,8 @@ public:
 	    else
 		cout<<num<<" is not in bounds\n";
 	};
-	vector<int>* GetCh0(){return ch0;};
+	vector<int>* GetCh0(int cha){return ch[cha];};
 	TGraph* GetTrace();
->>>>>>> fbf93376856ef18ade416f0b69026336b41c0742
 		
 };
 
