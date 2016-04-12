@@ -100,7 +100,6 @@ int PmtData::GetPulseIntegral(int cha,int event)
 	cout<<"event is greater then "<< num;
 	return 0;
     }
-
     return pulseIntegral[cha]->at(event);
 }
 void PmtData::CalIntegral(int cha)
@@ -124,7 +123,7 @@ void PmtData::CalIntegral(int cha)
 				int integral=0;
 				for(int k=j-5;k<j+20;++k)
 				{
-					integral-=ch[0]->at(k)-DC[cha];	
+					integral-=4*(ch[cha]->at(k)-DC[cha]);	
 				}
 			//	cout<<integral<<endl;
 				charge[cha]->Fill(integral);
