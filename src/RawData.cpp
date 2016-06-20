@@ -10,8 +10,10 @@ RawData::RawData(char *fileName)
 {
 	file=new TFile(fileName);
 	tree=(TTree*)file->Get("RawEventTree");
-	ch[0]=new vector<int>();
-	ch[1]=new vector<int>();
+	for(int i=0;i<NCHA;++i)
+	{
+	    ch[i]=new vector<int>();
+	}
 	tree->SetBranchAddress("channelData0",&ch[0]);
 	tree->SetBranchAddress("channelData1",&ch[1]);
 	tree->SetBranchAddress("nChannels",&nCha);
@@ -23,7 +25,10 @@ RawData::RawData(string *fileName)
 {
 	file=new TFile(fileName->c_str());
 	tree=(TTree*)file->Get("RawEventTree");
-	ch[0]=new vector<int>();
+	for(int i=0;i<NCHA;++i)
+	{
+	    ch[i]=new vector<int>();
+	}
 	tree->SetBranchAddress("channelData0",&ch[0]);
 	entry=0;
 	tree->GetEntry(entry);

@@ -6,13 +6,14 @@
 #include<iostream>
 #ifndef RAWDATA_HH
 #define RAWDATA_HH
+#define NCHA 2
 using namespace std;
 class RawData
 {
 protected:
 	TFile * file;
 	TTree* tree;
-	vector<int>* ch[2];
+	vector<int>* ch[NCHA];
 	int entry;
 	uint32_t nCha;
 public:
