@@ -13,10 +13,9 @@ protected:
 	int num;
 	vector<double> *DC[NCHA];
 	bool sub;
-	TH1D* charge[NCHA];
 	vector <int>* pulseIntegral[NCHA];
 	char* histName;
-	int cutoff;
+	vector<int>* time[NCHA];
 public:
 	PmtData(char* filename);
 	PmtData();
@@ -32,9 +31,11 @@ public:
 			cout<<entry<<" is out range [0,"<<num <<"). Entry not changed.\n";
 		}
 	};
+	vector <int>* GetTimeList(int);
+	int GetTime();
 	void SetNum(int num){this->num=num;};
 	int GetNum(){return this->num;};
-	TH1D* GetIntegral(int);
+	TH1D* GetIntegralHist(int);
 	void CalIntegral(int);
 	int GetPulseIntegral(int,int);
 	TGraph* GetTrace(int);

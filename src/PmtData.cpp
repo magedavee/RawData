@@ -18,26 +18,29 @@ PmtData::PmtData(char *filename):RawData(filename)
 	{
 
 	    DC[i]=new vector<double>();
+	    time[i]=new vector<int>();
+	    pulseIntegral[i]=new vector<int>();
 	}
-	cutoff=3980;
-	charge[0]=new TH1D("chargeLeft","charge Left",10000,0,10000);
-	charge[1]=new TH1D("chargeRight","charge Right",10000,0,10000);
-	pulseIntegral[0]=new vector<int>();
-	pulseIntegral[1]=new vector<int>();
 }
 
 
 
 
-TH1D* PmtData::GetIntegral(int cha)
+TH1D* PmtData::GetIntegralHist(int cha)
 {
+	TH1D* charge;
 	if(cha>NCHA)
 	{
-	    cout<<"channel higher than NCHA will be set to 0";
+	    cout<<"channel higher than "<< NCHA<<" will be set to 0";
 	    cha=0;
 	}
+
+	for(int i=0;i<num;++i)
+	{
+	    charge->Fill(pulseIntegral[cha]->at(i));	    
+	}
 	
-	return charge[cha];
+	return charge;
 }
 
 int PmtData::GetPulseIntegral(int cha,int event)
@@ -85,14 +88,29 @@ void PmtData::CalIntegral(int cha)
 	DC[cha]->push_back(dc);
 	//calcualte pulse intergral with whats left
 	int pulseInt=0;
+	int val=0;
 	while(!lebCal->empty())
 	{
 	    
-	    int val=lebCal->top()-dc;
+	    val=lebCal->top()-dc;
 	    pulseInt-=4*val;
 	    lebCal->pop();
 	}
+
+
 	pulseIntegral[cha]->push_back(pulseInt);
+	int peak=val;
+	TGraph* gr=GetTrace(cha);
+	for(int j=0;j<1200;++j)
+	{
+	    int check=gr->Eval(j);
+	    if(check<val/2)
+	    {
+		time[cha]->push_back(j);
+		break;
+	    }
+	}
+	delete gr;	
 	delete lebCal;
     }
 
@@ -140,7 +158,9 @@ void PmtData::Write(char *fileName)
 
 	cout<<fileName<<endl;
 	TFile * file=new TFile(fileName,"RECREATE");
-	this->charge[0]->Write();
-	this->charge[1]->Write();
+	for(int i=0;i<NCHA;++i)
+	{
+	    this->GetIntegralHist(i)->Write();
+	}
 	file->Close();	
 }
