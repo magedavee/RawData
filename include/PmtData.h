@@ -10,32 +10,31 @@ using namespace std;
 class PmtData:public RawData
 {
 protected:
-	int num;
 	vector<double> *DC[NCHA];
-	bool sub;
 	vector <int>* pulseIntegral[NCHA];
-	char* histName;
 	vector<int>* time[NCHA];
 public:
-	PmtData(char* filename);
+	PmtData(const char*);
+	PmtData(const char*,const char* );
 	PmtData();
 	void SetEntry(int entry)
 	{
-		if(entry<num&&num>=0)
-		{
-			this->entry=entry; 
-			this->tree->GetEntry(entry);	
-		}
-		else
-		{
-			cout<<entry<<" is out range [0,"<<num <<"). Entry not changed.\n";
-		}
-	};
+	    cerr<<" 000 PmtData.h SetEntry\n";
+	    int num=GetEntries();
+	    if(entry<num&&num>=0)
+	    {
+		cerr<<" 001 PmtData.h if entry "<<entry<<endl;
+		this->entry=entry; 
+		this->tree->GetEntry(entry);	
+	    }
+	    else
+	    {
+		    cout<<entry<<" is out range [0,"<<num <<"). Entry not changed.\n";
+	    }
+    };
 	vector <int>* GetTimeList(int);
 	int GetTime();
-	void SetNum(int num){this->num=num;};
-	int GetNum(){return this->num;};
-	TH1D* GetIntegralHist(int);
+	TH1D GetIntegralHist(int);
 	void CalIntegral(int);
 	int GetPulseIntegral(int,int);
 	TGraph* GetTrace(int);
