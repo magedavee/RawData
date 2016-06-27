@@ -23,12 +23,18 @@ public:
 	RawData(const char *fileName);
 	~RawData();
 	int GetEntry(){return entry;};
-	int GetNCha(){return *nCha;};
+	uint32_t GetNCha()
+	{
+	     
+	    cerr<<" 400 RawData GetNCha ptr "<<nCha<<endl;
+	    cerr<<" *nCha  "<<*nCha<<endl;
+	    return *nCha;
+	 };
 	int GetEntries	()
 	{
 	    //cerr<<"GetEntries "<<2000<<endl;
 	    //return 2000;
-	    cerr<<"GetEntries "<<tree->GetEntries()<<endl;
+	    cerr<<" RawData GetEntries "<<tree->GetEntries()<<endl;
 	    return tree->GetEntries();	
 	};   
 	vector<int>* GetCh(int cha){return ch[cha];};

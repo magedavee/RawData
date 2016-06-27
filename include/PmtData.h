@@ -14,6 +14,7 @@ protected:
 	vector <int>* pulseIntegral[NCHA];
 	vector<int>* time[NCHA];
 public:
+	void CalIntegral(int);
 	PmtData(const char*);
 	PmtData(const char*,const char* );
 	PmtData();
@@ -23,23 +24,23 @@ public:
 	    int num=GetEntries();
 	    if(entry<num&&num>=0)
 	    {
-		cerr<<" 001 PmtData.h if entry "<<entry<<endl;
+		cerr<<" 001 PmtData.h SetEntry to  "<<entry<<endl;
 		this->entry=entry; 
 		this->tree->GetEntry(entry);	
 	    }
 	    else
 	    {
-		    cout<<entry<<" is out range [0,"<<num <<"). Entry not changed.\n";
+		    cerr<<entry<<" is out range [0,"<<num <<"). Entry not changed.\n";
 	    }
     };
 	vector <int>* GetTimeList(int);
 	int GetTime();
 	TH1D GetIntegralHist(int);
-	void CalIntegral(int);
 	int GetPulseIntegral(int,int);
 	TGraph* GetTrace(int);
 	void Write(char* file);
 	array<int,300> GetPulse(int,int);
+	int DeltaT(int,int);
 
 };
 
