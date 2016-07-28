@@ -14,23 +14,24 @@ protected:
 	vector <int>* pulseIntegral[NCHA];
 	vector<int>* time[NCHA];
 public:
-	void CalIntegral(int);
+	void CalIntegral();
+	void CalIntegralOld(int);
 	PmtData(const char*);
 	PmtData(const char*,const char* );
 	PmtData();
 	void SetEntry(int entry)
 	{
-	    cerr<<" 000 PmtData.h SetEntry\n";
+	    //cerr<<" 000 PmtData.h SetEntry\n";
 	    int num=GetEntries();
 	    if(entry<num&&num>=0)
 	    {
-		cerr<<" 001 PmtData.h SetEntry to  "<<entry<<endl;
+		//cerr<<" 001 PmtData.h SetEntry to  "<<entry<<endl;
 		this->entry=entry; 
 		this->tree->GetEntry(entry);	
 	    }
 	    else
 	    {
-		    cerr<<entry<<" is out range [0,"<<num <<"). Entry not changed.\n";
+		    //cerr<<entry<<" is out range [0,"<<num <<"). Entry not changed.\n";
 	    }
     };
 	vector <int>* GetTimeList(int);

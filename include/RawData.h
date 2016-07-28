@@ -6,7 +6,10 @@
 #include<iostream>
 #ifndef RAWDATA_HH
 #define RAWDATA_HH
-#define NCHA 2
+//#define NCHA 2 //number channels
+//#define CHAOFF 0//when they dont use channels in the right order
+#define NCHA 4 //number channels
+#define CHAOFF 2//when they dont use channels in the right order
 using namespace std;
 class RawData
 {
@@ -26,15 +29,15 @@ public:
 	uint32_t GetNCha()
 	{
 	     
-	    cerr<<" 400 RawData GetNCha ptr "<<nCha<<endl;
-	    cerr<<" *nCha  "<<*nCha<<endl;
+	    //cerr<<" 400 RawData GetNCha ptr "<<nCha<<endl;
+	    //cerr<<" *nCha  "<<*nCha<<endl;
 	    return *nCha;
 	 };
 	int GetEntries	()
 	{
 	    //cerr<<"GetEntries "<<2000<<endl;
-	    //return 2000;
-	    cerr<<" RawData GetEntries "<<tree->GetEntries()<<endl;
+	   // return 2000;
+	    //cerr<<" RawData GetEntries "<<tree->GetEntries()<<endl;
 	    return tree->GetEntries();	
 	};   
 	vector<int>* GetCh(int cha){return ch[cha];};
