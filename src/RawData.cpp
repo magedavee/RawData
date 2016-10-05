@@ -8,13 +8,13 @@ RawData::RawData()
 
 RawData::RawData(const char *fileName)
 {
-	//cerr<<" 100   RawData const char "<<fileName<<endl;
+	//cerr<<"db"<<" 100   RawData const char "<<fileName<<endl;
 	file=new TFile(fileName);
 	tree=(TTree*)file->Get("RawEventTree");
 	nCha=new uint32_t();
-	//cerr<<" 104 GetNCha ptr "<<nCha<<endl;
-	//cerr<<" *nCha  "<<*nCha<<endl;
-	//cerr<<" 101   tree->GetEntries "<<tree->GetEntries()<<endl;
+	//cerr<<"db"<<" 104 GetNCha ptr "<<nCha<<endl;
+	//cerr<<"db"<<" *nCha  "<<*nCha<<endl;
+	//cerr<<"db"<<" 101   tree->GetEntries "<<tree->GetEntries()<<endl;
 	for(int cha=0;cha<NCHA;++cha)
 	{
 	    ch[cha]=new vector<int>();
@@ -22,30 +22,30 @@ RawData::RawData(const char *fileName)
 	    string chan=to_string(cha+CHAOFF);
 	    name+=chan;
 
-	    //cerr<<" 102   RawData cha "<<cha<<endl;
+	    //cerr<<"db"<<" 102   RawData cha "<<cha<<endl;
 	    cout<<"making branch on "<<name<<" using "<<cha<<endl;
 	    tree->SetBranchAddress(name.c_str(),&ch[cha]);
-	    //cerr<<&ch[cha]<<" "<<ch[cha]->size()<<endl;
+	    //cerr<<"db"<<&ch[cha]<<" "<<ch[cha]->size()<<endl;
 	}
 	
 	cout<<"make branch nChannels\n";
-	//cerr<<"RawData &nCha "<<nCha<<endl;
+	//cerr<<"db"<<"RawData &nCha "<<nCha<<endl;
 	tree->SetBranchAddress("nChannels",nCha);
 	entry=0;
-	//cerr<<" 103   RawData tree-> GetEntry \n";
+	//cerr<<"db"<<" 103   RawData tree-> GetEntry \n";
 	tree->GetEntry(entry);
-	//cerr<<" 105 GetNCha ptr "<<nCha<<endl;
-	//cerr<<" *nCha  "<<*nCha<<endl;
+	//cerr<<"db"<<" 105 GetNCha ptr "<<nCha<<endl;
+	//cerr<<"db"<<" *nCha  "<<*nCha<<endl;
 }
 
 RawData::RawData(string *fileName):RawData(fileName->c_str())
 {
-    //cerr<<"RawData string* "<<fileName<<endl;
+    //cerr<<"db"<<"RawData string* "<<fileName<<endl;
 }
 
 RawData::RawData(string fileName):RawData(fileName.c_str())
 {
-    //cerr<<"RawData string "<<fileName<<endl;
+    //cerr<<"db"<<"RawData string "<<fileName<<endl;
 }
 
 RawData::~RawData()

@@ -29,15 +29,15 @@ public:
 	uint32_t GetNCha()
 	{
 	     
-	    //cerr<<" 400 RawData GetNCha ptr "<<nCha<<endl;
-	    //cerr<<" *nCha  "<<*nCha<<endl;
+	    //cerr<<"db"<<" 400 RawData GetNCha ptr "<<nCha<<endl;
+	    //cerr<<"db"<<" *nCha  "<<*nCha<<endl;
 	    return *nCha;
 	 };
 	int GetEntries	()
 	{
-	    //cerr<<"GetEntries "<<2000<<endl;
-	   // return 2000;
-	    //cerr<<" RawData GetEntries "<<tree->GetEntries()<<endl;
+	    //cerr<<"db"<<"GetEntries "<<2000<<endl;
+	    //return 10000;
+	    //cerr<<"db"<<" RawData GetEntries "<<tree->GetEntries()<<endl;
 	    return tree->GetEntries();	
 	};   
 	vector<int>* GetCh(int cha){return ch[cha];};
